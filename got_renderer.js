@@ -8,7 +8,7 @@ var color = d3.scale.category20b();
 
 // Setup the force layout
 var force = d3.layout.force()
-    .charge(-400)
+    .charge(-200)
     .linkDistance(100)
     .size([width, height]);
 
@@ -17,14 +17,9 @@ var svg = d3.select("body").append("svg")
     .attr("width", width)
     .attr("height", height);
 
-//Read the data from the mis element
-// var mis = document.getElementById('mis').innerHTML;
-// var graph = JSON.parse(mis);
-
-// Don't do it like above, do it like this. Get the data from a json file.
+// Retrieve data from the database API
 d3.json('http://localhost:8080/json', function(err, json){
     if (err) throw err;
-    console.log(json);
     graph = json;
     // return json;
     update();
@@ -58,9 +53,8 @@ function update(){
     node.append("text")
           .attr("dx", 10)
           .attr("dy", ".35em")
-          .text(function(d) { return d.name });
-
-
+          .text(function(d) { return d.name })
+          .style("stroke", "white");
 
          //Now we are giving the SVGs co-ordinates - the force layout is generating the co-ordinates which this code is using to update the attributes of the SVG elements
     force.on("tick", function () {

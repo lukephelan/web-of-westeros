@@ -1,5 +1,9 @@
+html {
+  background: url(/style/black-Linen_@2X.png);
+}
+
 .link {
-  stroke: #ccc;
+  stroke: white;
 }
 
 .node text {
