@@ -22,8 +22,9 @@ var svg = d3.select("body").append("svg")
 // var graph = JSON.parse(mis);
 
 // Don't do it like above, do it like this. Get the data from a json file.
-d3.json('./info/miserables2.json', function(err, json){
+d3.json('http://localhost:8080/json', function(err, json){
     if (err) throw err;
+    console.log(json.links);
     graph = json;
     // return json;
     update();

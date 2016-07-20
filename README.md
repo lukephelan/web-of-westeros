@@ -76,3 +76,11 @@ capture information such as that we want to store in the database.
 
 Download Neo4j, then copy and paste the code from [got-tree]('/got-tree') into
 the command line to seed the database.
+
+## Problems
+
+- Learning Neo4j
+- Figuring out how to seed the database properly (link to that seed file)
+- Visualising the data (a few links here)
+- Getting the JSON output to be in the format I wanted
+- Parsing the JSON into the front end
