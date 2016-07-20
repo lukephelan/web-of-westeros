@@ -19,7 +19,7 @@ app.get('/', function (req, res) {
 });
 
 // Create an array to store the database results
-var object = [];
+var object = {};
 
 app.get('/json', function (req, res){
 
@@ -32,31 +32,35 @@ app.get('/json', function (req, res){
         // console.log(result.data);
         // console.log(JSON.stringify(result));
         // console.log(object);
-        object.push(result.data);
+        object.nodes = result.data;
+
+        db.cypherQuery("START n=node(*) MATCH (n)-[r]->(m) RETURN {source: id(n), target: id(m), value: r.value}", function(err, result){
+            if(err) throw err;
+            // console.log(result.data);
+            // console.log(JSON.stringify(result));
+            // res.send(result.data); // delivers an array of query results
+            // object.push(result.data);
+            object.links = result.data
+
+            // var nodes = object.nodes;
+            // console.log(nodes);
+            // var links = object.links;
+            // console.log(object);
+            // console.log({nodes, links});
+            // console.log(object);
+            res.send(object);
+        });
 
         // console.log(object);
         // res.send(result.data); // delivers an array of query results
     });
     // Retrieve all relationships from the database
-    db.cypherQuery("START n=node(*) MATCH (n)-[r]->(m) RETURN {source: id(n), target: id(m), value: r.value}", function(err, result){
-        if(err) throw err;
-        // console.log(result.data);
-        // console.log(JSON.stringify(result));
-        // res.send(result.data); // delivers an array of query results
-        object.push(result.data);
-    });
+
     // object = JSON.parse(object);
     // console.log(nodes);
     // console.log(links);
     // Store the nodes and links in an object and send it
     // console.log(object);
-
-    var nodes = object[0];
-    // console.log(nodes);
-    var links = object[1];
-    // console.log(object);
-    // console.log({nodes, links});
-    res.send({links, nodes});
 });
 
 app.listen(8080, function() {
