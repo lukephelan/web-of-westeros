@@ -83,4 +83,4 @@ the command line to seed the database.
 - Figuring out how to seed the database properly (link to that seed file)
 - Visualising the data (a few links here)
 - Getting the JSON output to be in the format I wanted
-- Parsing the JSON into the front end
+- Parsing the JSON into the front ends
