@@ -1,11 +1,20 @@
-html {
-  /*background: url(/style/black-Linen_@2X.png);*/
-  /*color: white;*/
+body {
+  background: url(/style/black-Linen_@2X.png);
+  color: white;
   text-align: center;
 }
 
+.ui-widget {
+  color: black;
+  margin: 10px;
+}
+
 .link {
-  stroke: black;
+  stroke: white;
+}
+
+.node {
+  border-radius: 50%;
 }
 
 .node text {
@@ -13,6 +22,10 @@ html {
   font: 10px sans-serif;
 }
 
-/*.node:not(:hover) text {
+.node image {
+  border-radius: 10px;
+}
+
+.node:not(:hover) text {
   display: none;
-}*/
+}

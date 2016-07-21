@@ -50,28 +50,36 @@ function update(){
     // Append a circle to the node
     node.append("circle")
         .attr("r", 8)
-        .style("fill", function (d) {
-            return color(d.group);
-        });
+        .attr("fill", function(d) {
+           return color(d.img);
+       });
+        // .style("fill", function (d) {
+        //     return color(d.group);
+        // });
 
     // Append an image to the circle
-    node.append("image")
-        .attr("xlink:href", function(d) {
-            return d.img
-        })
-        .attr("x", function(d) { return -25;})
-        .attr("y", function(d) { return -25;})
-        .attr("height", 50)
-        .attr("width", 50);
+    // node.append("image")
+    //     .attr("xlink:href", function(d) {
+    //         return d.img
+    //     })
+    //     .attr("x", function(d) { return -25;})
+    //     .attr("y", function(d) { return -25;})
+    //     .attr("height", 50)
+    //     .attr("width", 50)
+    //     .style("border-radius", "50%");
+
+    // node.append("div")
+    //     .attr("class", "
 
     node.append("text")
           .attr("dx", 10)
           .attr("dy", ".35em")
           .text(function(d) { return d.name })
-          .style("stroke", "black");
+          .style("stroke", "white");
 
          //Now we are giving the SVGs co-ordinates - the force layout is generating the co-ordinates which this code is using to update the attributes of the SVG elements
     force.on("tick", function () {
+
         link.attr("x1", function (d) {
             return d.source.x;
         })
@@ -84,6 +92,7 @@ function update(){
             .attr("y2", function (d) {
             return d.target.y;
         });
+
         d3.selectAll("circle")
             .attr("cx", function (d) {
             return d.x;
@@ -91,13 +100,15 @@ function update(){
             .attr("cy", function (d) {
             return d.y;
         });
+
         d3.selectAll("image")
             .attr("x", function (d) {
-            return d.x;
+            return d.x - 25;
         })
             .attr("y", function (d) {
-            return d.y;
+            return d.y - 25;
         });
+
         d3.selectAll("text")
             .attr("x", function (d) {
             return d.x;
