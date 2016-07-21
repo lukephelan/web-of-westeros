@@ -1,20 +1,36 @@
 // Setup our constants for the SVG
 var width = 1440,
-    height = 800,
+    height = 600,
     graph;
 
 // Setup the colour scale
 var color = d3.scale.category20b();
 
-// Append a SVG to the body of the html page and ssign this SVG as an object
-var svg = d3.select("body").append("svg")
+// Append a SVG to the body of the html page and assign this SVG as an object
+var svg = d3.select(".force-graph").append("svg:svg")
     .attr("width", width)
-    .attr("height", height);
+    .attr("height", height)
+    .attr("pointer-events", "all")
+    .append('svg:g')
+    .call(d3.behavior.zoom().on("zoom", redraw))
+    .append('svg:g');
+
+function redraw() {
+      console.log("here", d3.event.translate, d3.event.scale);
+      svg.attr("transform",
+          "translate(" + d3.event.translate + ")"
+          + " scale(" + d3.event.scale + ")");
+    }
+
+svg.append('svg:rect')
+    .attr('width', width)
+    .attr('height', height)
+    .attr('fill', 'transparent');
 
 // Setup the force layout
 var force = d3.layout.force()
-    .charge(-200)
-    .linkDistance(100)
+    .charge(-300)
+    .linkDistance(50)
     .size([width, height]);
 
 // Retrieve data from the database API
@@ -38,13 +54,24 @@ function update(){
         .enter()
         .append("line")
         .attr("class", "link")
-        .style("stroke-width", 2);
+        .style("stroke-width", 2)
+        .attr("x1", function(d) { return d.source.x; })
+        .attr("y1", function(d) { return d.source.y; })
+        .attr("x2", function(d) { return d.target.x; })
+        .attr("y2", function(d) { return d.target.y; });
 
     var node = svg.selectAll(".node")
         .data(graph.nodes)
         .enter()
         .append("g")
         .attr("class", "node")
+        .attr("cx", function(d) { return d.x; })
+        .attr("cy", function(d) { return d.y; })
+        .on("dblclick", function(d) {
+            // console.log("Hello girls");})
+            $('.modal').css("display", "block");
+        })
+            // .style("display", "block"); })
         .call(force.drag);
 
     // Append a circle to the node
@@ -58,24 +85,24 @@ function update(){
         // });
 
     // Append an image to the circle
-    // node.append("image")
-    //     .attr("xlink:href", function(d) {
-    //         return d.img
-    //     })
-    //     .attr("x", function(d) { return -25;})
-    //     .attr("y", function(d) { return -25;})
-    //     .attr("height", 50)
-    //     .attr("width", 50)
-    //     .style("border-radius", "50%");
+    node.append("image")
+        .attr("xlink:href", function(d) {
+            return d.img
+        })
+        .attr("x", function(d) { return -25;})
+        .attr("y", function(d) { return -25;})
+        .attr("height", 50)
+        .attr("width", 50)
+        .style("border-radius", "50%");
 
     // node.append("div")
     //     .attr("class", "
 
     node.append("text")
-          .attr("dx", 10)
+          .attr("dx", 22)
           .attr("dy", ".35em")
           .text(function(d) { return d.name })
-          .style("stroke", "white");
+          .style("fill", "white");
 
          //Now we are giving the SVGs co-ordinates - the force layout is generating the co-ordinates which this code is using to update the attributes of the SVG elements
     force.on("tick", function () {
@@ -117,6 +144,16 @@ function update(){
             return d.y;
         });
     });
+
+    // var setEvents = images
+        // Append hero text
+        // d3.select("image")
+        //     .on("click", function (d) {
+        //     d3.select("modal")
+        //     .style("display", "block");
+        //     // d3.select("h2").html(d.name);
+        //     // d3.select("h3").html ("Take me to " + "<a href='" + d.link + "' >"  + d.hero + " web page ⇢"+ "</a>" );
+        // });
 
 // ===== COLLISION DETECTION =====
 
