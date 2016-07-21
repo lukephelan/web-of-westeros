@@ -1,5 +1,7 @@
 html {
   background: url(/style/black-Linen_@2X.png);
+  color: white;
+  text-align: center;
 }
 
 .link {
@@ -10,3 +12,7 @@ html {
   pointer-events: none;
   font: 10px sans-serif;
 }
+
+/*.node:not(:hover) text {
+  display: none;
+}*/
