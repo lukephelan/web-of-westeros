@@ -19,7 +19,7 @@ var object = {};
 app.get('/json', function (req, res){
 
     // Retrieve all nodes from the database
-    db.cypherQuery("START N=NODE(*) RETURN {name: N.name, group: N.group}", function(err, result){
+    db.cypherQuery("START N=NODE(*) RETURN {name: N.name, group: N.group, img: N.img}", function(err, result){
         if(err) throw err;
         object.nodes = result.data;
 

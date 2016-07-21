@@ -1,11 +1,11 @@
 html {
-  background: url(/style/black-Linen_@2X.png);
-  color: white;
+  /*background: url(/style/black-Linen_@2X.png);*/
+  /*color: white;*/
   text-align: center;
 }
 
 .link {
-  stroke: white;
+  stroke: black;
 }
 
 .node text {

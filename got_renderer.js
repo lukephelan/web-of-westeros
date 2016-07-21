@@ -32,29 +32,42 @@ function update(){
         .links(graph.links)
         .start();
 
-    //Create all the line svgs but without locations yet
+    //Create all the lines but without locations yet
     var link = svg.selectAll(".link")
         .data(graph.links)
         .enter().append("line")
         .attr("class", "link")
-        .style("stroke-width", 1);
-    // });
+        .style("stroke-width", 2);
 
     var node = svg.selectAll(".node")
         .data(graph.nodes)
-        .enter().append("g")
+        .enter()
+        .append("g")
         .attr("class", "node")
         .call(force.drag);
+
+    // Append a circle to the node
     node.append("circle")
         .attr("r", 8)
         .style("fill", function (d) {
-        return color(d.group);
-    })
+            return color(d.group);
+        });
+
+    // Append an image to the circle
+    node.append("image")
+        .attr("xlink:href",  function(d) {
+            return d.img
+        })
+        .attr("x", function(d) { return -25;})
+        .attr("y", function(d) { return -25;})
+        .attr("height", 50)
+        .attr("width", 50);
+
     node.append("text")
           .attr("dx", 10)
           .attr("dy", ".35em")
           .text(function(d) { return d.name })
-          .style("stroke", "white");
+          .style("stroke", "black");
 
          //Now we are giving the SVGs co-ordinates - the force layout is generating the co-ordinates which this code is using to update the attributes of the SVG elements
     force.on("tick", function () {
