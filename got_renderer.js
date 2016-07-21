@@ -6,16 +6,16 @@ var width = 1440,
 // Setup the colour scale
 var color = d3.scale.category20b();
 
+// Append a SVG to the body of the html page and ssign this SVG as an object
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
 // Setup the force layout
 var force = d3.layout.force()
     .charge(-200)
     .linkDistance(100)
     .size([width, height]);
-
-// Append a SVG to the body of the html page and ssign this SVG as an object
-var svg = d3.select("body").append("svg")
-    .attr("width", width)
-    .attr("height", height);
 
 // Retrieve data from the database API
 d3.json('http://localhost:8080/json', function(err, json){
@@ -35,7 +35,8 @@ function update(){
     //Create all the lines but without locations yet
     var link = svg.selectAll(".link")
         .data(graph.links)
-        .enter().append("line")
+        .enter()
+        .append("line")
         .attr("class", "link")
         .style("stroke-width", 2);
 
@@ -55,7 +56,7 @@ function update(){
 
     // Append an image to the circle
     node.append("image")
-        .attr("xlink:href",  function(d) {
+        .attr("xlink:href", function(d) {
             return d.img
         })
         .attr("x", function(d) { return -25;})
@@ -83,13 +84,22 @@ function update(){
             .attr("y2", function (d) {
             return d.target.y;
         });
-        d3.selectAll("circle").attr("cx", function (d) {
+        d3.selectAll("circle")
+            .attr("cx", function (d) {
             return d.x;
         })
             .attr("cy", function (d) {
             return d.y;
         });
-        d3.selectAll("text").attr("x", function (d) {
+        d3.selectAll("image")
+            .attr("x", function (d) {
+            return d.x;
+        })
+            .attr("y", function (d) {
+            return d.y;
+        });
+        d3.selectAll("text")
+            .attr("x", function (d) {
             return d.x;
         })
             .attr("y", function (d) {
