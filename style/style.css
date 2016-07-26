@@ -24,20 +24,21 @@ ul {
   stroke: black;
 }
 
-.node {
-  border-radius: 50%;
-}
-
 .node text {
   pointer-events: none;
   font-style: normal;
 }
 
-.node image {
-  border-radius: 10px;
+.node:not(:hover) text {
+  display: none;
 }
 
-.node:not(:hover) text {
+.link text {
+  pointer-events: none;
+  font-style: normal;
+}
+
+.edgelabel:not(:hover) text {
   display: none;
 }
 

@@ -8,7 +8,8 @@ var width = 1440,
 // var color = d3.scale.category20b();
 
 // Append the SVG to the force-graph div and assign this SVG as an object
-var svg = d3.select(".force-graph").append("svg")
+var svg = d3.select(".force-graph")
+    .append("svg")
     .attr("width", width)
     .attr("height", height)
     .attr("pointer-events", "all")
@@ -17,7 +18,7 @@ var svg = d3.select(".force-graph").append("svg")
     .append('g');
 
 // Append a background to the SVG to receive pointer events for zoom and pan
-svg.append('rect')
+svg.append('svg:rect')
     .attr('width', width)
     .attr('height', height)
     .attr('fill', 'transparent');
@@ -58,14 +59,63 @@ function draw(){
         .enter()
         .append("line")
         .attr("class", "link")
+        .attr("id",function(d,i) {return 'link'+i})
+        .attr('marker-end','url(#arrowhead)')
         .style("stroke-width", 2);
 
     // Append label to the links
-    link.append("text")
-        // .attr("dx", 22)
-        // .attr("dy", ".35em")
-        .text(function(d) { return d.name })
-        .style("fill", "black");
+    // link.append("text")
+    //     .attr("dx", 22)
+    //     .attr("dy", ".35em")
+    //     .text(function(d) { return d.name })
+    //     .style("fill", "black");
+
+    var linkpaths = svg.selectAll(".linkpath")
+        .data(graph.links)
+        .enter()
+        .append("path")
+        .attr({'d': function(d) {return 'M '+d.source.x+' '+d.source.y+' L '+ d.target.x +' '+d.target.y},
+            'class':'linkpath',
+            'fill-opacity':0,
+            'stroke-opacity':0,
+            'fill':'blue',
+            'stroke':'red',
+            'id':function(d,i) {return 'linkpath'+i}})
+        .style("pointer-events", "none");
+
+    var linklabels = svg.selectAll(".linklabel")
+        .data(graph.links)
+        .enter()
+        .append("text")
+        .style("pointer-events", "none")
+        .attr({'class':'linklabel',
+            'id':function(d,i){return 'linklabel'+i},
+            'dx':80,
+            'dy':0,
+            'font-size':10,
+            'fill':'#aaa'});
+
+    linklabels.append("textPath")
+        .attr('xlink:href',function(d,i) {return '#linkpath'+i})
+        .style("pointer-events", "none")
+        .text(function(d,i){return d.name});
+
+
+    svg.append('defs').append('marker')
+        .attr({'id':'arrowhead',
+            'viewBox':'-0 -5 10 10',
+            'refX':25,
+            'refY':0,
+            //'markerUnits':'strokeWidth',
+            'orient':'auto',
+            'markerWidth':10,
+            'markerHeight':10,
+            'xoverflow':'visible'})
+        .append('svg:path')
+            .attr('d', 'M 0,-5 L 10 ,0 L 0,5')
+            .attr('fill', '#ccc')
+            .attr('stroke','#ccc');
+
 
     // Create all the nodes
     var node = svg.selectAll(".node")
@@ -73,22 +123,22 @@ function draw(){
         .enter()
         .append("g")
         .attr("class", "node")
-        // .attr("cx", function(d) { return d.x; })
-        // .attr("cy", function(d) { return d.y; })
+        .attr("cx", function(d) { return d.x; })
+        .attr("cy", function(d) { return d.y; })
         .on("dblclick", function(d) {
             // Display the info modal when double clicking on the node
-            $('.modal').css("display", "block");
+            $('.modal').css("display", "block")
         })
         .call(force.drag);
 
     // Append an image to the node from the URL in the database
     node.append("image")
-        .attr("id", "photo")
+        .attr("class", "image")
         .attr("xlink:href", function(d) {
             return d.img
         })
-        // .attr("x", function(d) { return -25;})
-        // .attr("y", function(d) { return -25;})
+        .attr("x", function(d) { return -25;})
+        .attr("y", function(d) { return -25;})
         .attr("height", 50)
         .attr("width", 50);
 
@@ -105,8 +155,8 @@ function draw(){
 
     // Append a label to each node from the name field in the database
     node.append("text")
-        //   .attr("dx", 22)
-        //   .attr("dy", ".35em")
+          .attr("dx", 22)
+          .attr("dy", ".35em")
           .text(function(d) { return d.name })
           .style("fill", "black");
 
@@ -117,6 +167,22 @@ function draw(){
             .attr("y1", function (d){ return d.source.y; })
             .attr("x2", function (d){ return d.target.x; })
             .attr("y2", function (d){ return d.target.y; });
+
+        linkpaths.attr('d', function(d) { var path='M '+d.source.x+' '+d.source.y+' L '+ d.target.x +' '+d.target.y;
+                                              //console.log(d)
+                                              return path});
+
+        linklabels.attr('transform',function(d,i){
+            if (d.target.x<d.source.x){
+                bbox = this.getBBox();
+                rx = bbox.x+bbox.width/2;
+                ry = bbox.y+bbox.height/2;
+                return 'rotate(180 '+rx+' '+ry+')';
+                }
+            else {
+                return 'rotate(0)';
+                }
+            });
 
         // d3.selectAll("circle")
         //     .attr("cx", function (d){
