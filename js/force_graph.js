@@ -5,13 +5,7 @@ var width = 1440,
 
 // Set the colour scale
 // Currently not used because we use images
-var color = d3.scale.category20b();
-
-// Set the force layout
-var force = d3.layout.force()
-    .charge(-300)
-    .linkDistance(50)
-    .size([width, height]);
+// var color = d3.scale.category20b();
 
 // Append the SVG to the force-graph div and assign this SVG as an object
 var svg = d3.select(".force-graph").append("svg")
@@ -28,14 +22,13 @@ svg.append('rect')
     .attr('height', height)
     .attr('fill', 'transparent');
 
-// Redrew the graph after zooming or panning
+// Redraw the graph after zooming or panning
 function redraw(){
     //   console.log("here", d3.event.translate, d3.event.scale);
-      svg.attr("transform",
-          "translate(" + d3.event.translate + ")"
-          + " scale(" + d3.event.scale + ")");
-        //   " scale(" + d3.event.scale + ")");
-    }
+    svg.attr("transform",
+        "translate(" + d3.event.translate + ")"
+        + " scale(" + d3.event.scale + ")");
+};
 
 // Retrieve data from the Neo4j database API, then create the graph
 d3.json('http://localhost:8080/json', function(err, json){
@@ -48,8 +41,15 @@ d3.json('http://localhost:8080/json', function(err, json){
 function draw(){
 
     // Create the graph data structure out of the json data
-    force.nodes(graph.nodes)
+
+    // Set the force layout
+    var force = d3.layout.force()
+        .nodes(graph.nodes)
         .links(graph.links)
+        .size([width, height])
+        .linkDistance(50)
+        .charge(-300)
+        .gravity(0.075)
         .start();
 
     // Create all the links without a location
@@ -59,10 +59,13 @@ function draw(){
         .append("line")
         .attr("class", "link")
         .style("stroke-width", 2);
-        // .attr("x1", function(d) { return d.source.x; })
-        // .attr("y1", function(d) { return d.source.y; })
-        // .attr("x2", function(d) { return d.target.x; })
-        // .attr("y2", function(d) { return d.target.y; });
+
+    // Append label to the links
+    link.append("text")
+        // .attr("dx", 22)
+        // .attr("dy", ".35em")
+        .text(function(d) { return d.name })
+        .style("fill", "black");
 
     // Create all the nodes
     var node = svg.selectAll(".node")
@@ -70,15 +73,13 @@ function draw(){
         .enter()
         .append("g")
         .attr("class", "node")
-        .attr("cx", function(d) { return d.x; })
-        .attr("cy", function(d) { return d.y; })
+        // .attr("cx", function(d) { return d.x; })
+        // .attr("cy", function(d) { return d.y; })
         .on("dblclick", function(d) {
             // Display the info modal when double clicking on the node
             $('.modal').css("display", "block");
         })
         .call(force.drag);
-
-
 
     // Append an image to the node from the URL in the database
     node.append("image")
@@ -86,11 +87,10 @@ function draw(){
         .attr("xlink:href", function(d) {
             return d.img
         })
-        .attr("x", function(d) { return -25;})
-        .attr("y", function(d) { return -25;})
+        // .attr("x", function(d) { return -25;})
+        // .attr("y", function(d) { return -25;})
         .attr("height", 50)
-        .attr("width", 50)
-        .style("border-radius", "50%")
+        .attr("width", 50);
 
     // // Append a circle to the node - NOT USED NOW BECAUSE WE HAVE AN IMAGE
     // node.append("circle")
@@ -103,58 +103,42 @@ function draw(){
     //         return color(d.group);
     //     });
 
-    // Display a name next to the node, from the name field in the database
+    // Append a label to each node from the name field in the database
     node.append("text")
-          .attr("dx", 22)
-          .attr("dy", ".35em")
+        //   .attr("dx", 22)
+        //   .attr("dy", ".35em")
           .text(function(d) { return d.name })
-          .style("fill", "white");
+          .style("fill", "black");
 
     // Give the SVG coordinates
     force.on("tick", function(){
 
-        link.attr("x1", function (d){
-            return d.source.x;
-        })
-            .attr("y1", function (d){
-            return d.source.y;
-        })
-            .attr("x2", function (d){
-            return d.target.x;
-        })
-            .attr("y2", function (d){
-            return d.target.y;
-        });
+        link.attr("x1", function (d){ return d.source.x; })
+            .attr("y1", function (d){ return d.source.y; })
+            .attr("x2", function (d){ return d.target.x; })
+            .attr("y2", function (d){ return d.target.y; });
 
-        d3.selectAll("circle")
-            .attr("cx", function (d){
-            return d.x;
-        })
-            .attr("cy", function (d){
-            return d.y;
-        });
+        // d3.selectAll("circle")
+        //     .attr("cx", function (d){
+        //     return d.x;
+        // })
+        //     .attr("cy", function (d){
+        //     return d.y;
+        // });
 
         d3.selectAll("image")
-            .attr("x", function (d){
-            return d.x - 25;
-        })
-            .attr("y", function (d){
-            return d.y - 25;
-        });
+            .attr("x", function (d){ return d.x - 25; })
+            .attr("y", function (d){ return d.y - 25; });
 
         d3.selectAll("text")
-            .attr("x", function (d){
-            return d.x;
-        })
-            .attr("y", function (d){
-            return d.y;
-        });
+            .attr("x", function (d){ return d.x; })
+            .attr("y", function (d){ return d.y; });
     });
 
 // ===== COLLISION DETECTION =====
 
-    var padding = 1, // Separation between circles
-        radius = 8;
+    var padding = 50, // Separation between nodes
+        radius = 50;
     function collide(alpha) {
         var quadtree = d3.geom.quadtree(graph.nodes);
         return function(d) {

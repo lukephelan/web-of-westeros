@@ -19,7 +19,7 @@ app.get('/json', function (req, res){
         object.nodes = result.data;
 
         // Retrieve all relationships from the database
-        db.cypherQuery("START n=node(*) MATCH (n)-[r]->(m) RETURN {source: id(n), target: id(m), value: r.value}", function(err, result){
+        db.cypherQuery("START n=node(*) MATCH (n)-[r]->(m) RETURN {source: id(n), target: id(m), value: r.value, name: r.name}", function(err, result){
             if(err) throw err;
             object.links = result.data
             // Send the object as a response

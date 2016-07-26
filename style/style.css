@@ -1,6 +1,6 @@
 body {
-  background: url(/style/black-Linen_@2X.png);
-  color: white;
+  /*background: url(/style/black-Linen_@2X.png);*/
+  /*color: white;*/
   text-align: center;
 }
 
@@ -15,13 +15,13 @@ body {
 
 ul {
     list-style-type: upper-roman;
-    background: white;
-    color: black;
+    background: black;
+    color: white;
     width: 170px;
 }
 
 .link {
-  stroke: white;
+  stroke: black;
 }
 
 .node {
