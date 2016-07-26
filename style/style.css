@@ -13,6 +13,13 @@ body {
   margin: 10px;
 }
 
+ul {
+    list-style-type: upper-roman;
+    background: white;
+    color: black;
+    width: 170px;
+}
+
 .link {
   stroke: white;
 }

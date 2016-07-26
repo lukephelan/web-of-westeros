@@ -4,16 +4,23 @@ var width = 1440,
     graph;
 
 // Set the colour scale
+// Currently not used because we use images
 var color = d3.scale.category20b();
 
+// Set the force layout
+var force = d3.layout.force()
+    .charge(-300)
+    .linkDistance(50)
+    .size([width, height]);
+
 // Append the SVG to the force-graph div and assign this SVG as an object
-var svg = d3.select(".force-graph").append("svg:svg")
+var svg = d3.select(".force-graph").append("svg")
     .attr("width", width)
     .attr("height", height)
     .attr("pointer-events", "all")
-    .append('svg:g')
+    .append('g')
     .call(d3.behavior.zoom().on("zoom", redraw))
-    .append('svg:g');
+    .append('g');
 
 // Redrew the graph after zooming or panning
 function redraw(){
@@ -21,19 +28,16 @@ function redraw(){
       svg.attr("transform",
           "translate(" + d3.event.translate + ")"
           + " scale(" + d3.event.scale + ")");
+        //   " scale(" + d3.event.scale + ")");
     }
 
 // Append a background to the SVG to receive pointer events for zoom and pan
-svg.append('svg:rect')
+svg.append('rect')
     .attr('width', width)
     .attr('height', height)
     .attr('fill', 'transparent');
 
-// Set the force layout
-var force = d3.layout.force()
-    .charge(-300)
-    .linkDistance(50)
-    .size([width, height]);
+
 
 // Retrieve data from the Neo4j database API, then create the graph
 d3.json('http://localhost:8080/json', function(err, json){
@@ -76,18 +80,11 @@ function update(){
         })
         .call(force.drag);
 
-    // // Append a circle to the node - NOT USED NOW BECAUSE WE HAVE AN IMAGE
-    // node.append("circle")
-    //     .attr("r", 8)
-    //     .attr("fill", function(d) {
-    //        return color(d.img);
-    //    });
-    //     // .style("fill", function (d) {
-    //     //     return color(d.group);
-    //     // });
+
 
     // Append an image to the node from the URL in the database
     node.append("image")
+        .attr("id", "photo")
         .attr("xlink:href", function(d) {
             return d.img
         })
@@ -96,6 +93,17 @@ function update(){
         .attr("height", 50)
         .attr("width", 50)
         .style("border-radius", "50%");
+
+    // // Append a circle to the node - NOT USED NOW BECAUSE WE HAVE AN IMAGE
+    node.append("circle")
+        .attr("r", 8)
+        .attr("fill", "url(#photo)");
+    //     .attr("fill", function(d) {
+    //        return color(d.img);
+    //    });
+        // .style("fill", function (d) {
+            // return color(d.group);
+        // });
 
     // Display a name next to the node, from the name field in the database
     node.append("text")
@@ -145,7 +153,7 @@ function update(){
         });
     });
 
-// ===== STANDARD COLLISION DETECTION CODE =====
+// ===== COLLISION DETECTION =====
 
     var padding = 1, // Separation between circles
         radius = 8;
@@ -175,7 +183,7 @@ function update(){
             };
         }
 
-    // ===== SEARCH FUNCTION =====
+    // ===== SEARCH =====
 
     var optArray = [];
     for (var i = 0; i < graph.nodes.length - 1; i++) {
@@ -184,7 +192,8 @@ function update(){
     optArray = optArray.sort();
     $(function () {
         $("#search").autocomplete({
-            source: optArray
+            source: optArray,
+            position: { my : "top", at: "bottom" }
         });
     });
 };
