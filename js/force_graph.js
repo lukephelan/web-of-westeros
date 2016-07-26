@@ -22,6 +22,12 @@ var svg = d3.select(".force-graph").append("svg")
     .call(d3.behavior.zoom().on("zoom", redraw))
     .append('g');
 
+// Append a background to the SVG to receive pointer events for zoom and pan
+svg.append('rect')
+    .attr('width', width)
+    .attr('height', height)
+    .attr('fill', 'transparent');
+
 // Redrew the graph after zooming or panning
 function redraw(){
     //   console.log("here", d3.event.translate, d3.event.scale);
@@ -31,23 +37,15 @@ function redraw(){
         //   " scale(" + d3.event.scale + ")");
     }
 
-// Append a background to the SVG to receive pointer events for zoom and pan
-svg.append('rect')
-    .attr('width', width)
-    .attr('height', height)
-    .attr('fill', 'transparent');
-
-
-
 // Retrieve data from the Neo4j database API, then create the graph
 d3.json('http://localhost:8080/json', function(err, json){
     if (err) throw err;
     graph = json;
-    update();
+    draw();
 });
 
 // Create the graph
-function update(){
+function draw(){
 
     // Create the graph data structure out of the json data
     force.nodes(graph.nodes)
@@ -92,18 +90,18 @@ function update(){
         .attr("y", function(d) { return -25;})
         .attr("height", 50)
         .attr("width", 50)
-        .style("border-radius", "50%");
+        .style("border-radius", "50%")
 
     // // Append a circle to the node - NOT USED NOW BECAUSE WE HAVE AN IMAGE
-    node.append("circle")
-        .attr("r", 8)
-        .attr("fill", "url(#photo)");
-    //     .attr("fill", function(d) {
-    //        return color(d.img);
-    //    });
-        // .style("fill", function (d) {
-            // return color(d.group);
-        // });
+    // node.append("circle")
+    //     .attr("r", 8)
+    //     // .attr("fill", "url(#photo)");
+    //     // .attr("fill", function(d) {
+    //     //    return color(d.img);
+    // //    });
+    //     .style("fill", function (d) {
+    //         return color(d.group);
+    //     });
 
     // Display a name next to the node, from the name field in the database
     node.append("text")
