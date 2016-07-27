@@ -207,6 +207,22 @@ and starting again.
 I believe Neo4j's approach to ID's is that the user is expected to create their
 own unique ID's upon creating data. Something to keep in mind.
 
+### Click and Drag
+
+Given the size of the visualisation, in order to prevent the display from
+clustering, I wanted to implement the ability to zoom and pan. I followed the
+examples online such as [this one](http://jsfiddle.net/nrabinowitz/QMKm3/). In
+this example you will notice that when you click and hold on the background,
+you can pan the graph. However, when you click on a node and drag, only the node
+moves. This would not work for me. Instead, when clicking and dragging the node
+the entire graph pans (the node also moves slightly).
+
+Finally, I discovered that I wasn't doing anything specific wrong, rather, I
+was using a different version of D3.js than in the examples I was finding. It
+turns out that D3.js changing the handling of drag gestures in version 3. See
+[this Stack Overflow question](http://stackoverflow.com/questions/17953106/why-does-d3-js-v3-break-my-force-graph-when-implementing-zooming-when-v2-doesnt)
+for an explanation.
+
 ## To-Do
 
 - Show character/house/region information upon double-click that is connected

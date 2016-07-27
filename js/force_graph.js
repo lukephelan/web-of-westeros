@@ -53,6 +53,9 @@ function draw(){
         .gravity(0.075)
         .start();
 
+    var drag = force.drag()
+        .on("dragstart", function() { d3.event.sourceEvent.stopPropagation(); });
+
     // Create all the links without a location
     var link = svg.selectAll(".link")
         .data(graph.links)
@@ -90,8 +93,8 @@ function draw(){
         .style("pointer-events", "none")
         .attr({'class':'linklabel',
             'id':function(d,i){return 'linklabel'+i},
-            'dx':80,
-            'dy':0,
+            'dx':0,
+            'dy':10,
             'font-size':10,
             'fill':'#aaa'});
 
@@ -106,7 +109,6 @@ function draw(){
             'viewBox':'-0 -5 10 10',
             'refX':25,
             'refY':0,
-            //'markerUnits':'strokeWidth',
             'orient':'auto',
             'markerWidth':10,
             'markerHeight':10,
@@ -129,7 +131,7 @@ function draw(){
             // Display the info modal when double clicking on the node
             $('.modal').css("display", "block")
         })
-        .call(force.drag);
+        .call(drag);
 
     // Append an image to the node from the URL in the database
     node.append("image")
@@ -141,6 +143,7 @@ function draw(){
         .attr("y", function(d) { return -25;})
         .attr("height", 50)
         .attr("width", 50);
+        // .call(force.drag);
 
     // // Append a circle to the node - NOT USED NOW BECAUSE WE HAVE AN IMAGE
     // node.append("circle")
@@ -160,6 +163,8 @@ function draw(){
           .text(function(d) { return d.name })
           .style("fill", "black");
 
+
+
     // Give the SVG coordinates
     force.on("tick", function(){
 
@@ -168,16 +173,18 @@ function draw(){
             .attr("x2", function (d){ return d.target.x; })
             .attr("y2", function (d){ return d.target.y; });
 
-        linkpaths.attr('d', function(d) { var path='M '+d.source.x+' '+d.source.y+' L '+ d.target.x +' '+d.target.y;
-                                              //console.log(d)
-                                              return path});
+        linkpaths.attr('d', function(d) {
+            var path = 'M '+d.source.x+' '+d.source.y+' L '+ d.target.x +
+                ' '+d.target.y;
+            return path
+        });
 
-        linklabels.attr('transform',function(d,i){
-            if (d.target.x<d.source.x){
+        linklabels.attr('transform',function(d, i){
+            if (d.target.x < d.source.x){
                 bbox = this.getBBox();
-                rx = bbox.x+bbox.width/2;
-                ry = bbox.y+bbox.height/2;
-                return 'rotate(180 '+rx+' '+ry+')';
+                rx = bbox.x + bbox.width / 2;
+                ry = bbox.y + bbox.height / 2;
+                return 'rotate(180 ' + rx + ' ' + ry + ')';
                 }
             else {
                 return 'rotate(0)';
