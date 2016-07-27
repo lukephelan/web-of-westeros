@@ -62,9 +62,9 @@ function draw(){
         .enter()
         .append("line")
         .attr("class", "link")
-        .attr("id",function(d,i) {return 'link'+i})
-        .attr('marker-end','url(#arrowhead)')
-        .style("stroke-width", 2);
+        .attr("id",function(d,i) {return 'link'+i});
+        // .attr('marker-end','url(#arrowhead)')
+        // .style("stroke-width", 2);
 
     // Append label to the links
     // link.append("text")
@@ -267,7 +267,9 @@ function searchNode(){
         selected.style("opacity", "0");
         var link = svg.selectAll(".link")
         link.style("opacity", "0");
-        d3.selectAll(".node, .link")
+        var linklabel = svg.selectAll(".linklabel")
+        linklabel.style("opacity", "0");
+        d3.selectAll(".node, .link, .linklabel")
             .transition()
             .duration(5000)
             .style("opacity", 1);
