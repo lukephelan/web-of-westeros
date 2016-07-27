@@ -20,6 +20,10 @@ ul {
     width: 170px;
 }
 
+.ui-helper-hidden-accessible {
+  display: none;
+}
+
 .link {
   stroke: black;
 }
@@ -55,6 +59,7 @@ ul {
     background-color:
     background-color:
     color: black;
+    text-align: left;
 }
 
 .modal-content {

@@ -1,6 +1,6 @@
 // Set the variables for the SVG
 var width = 1440,
-    height = 600,
+    height = 700,
     graph;
 
 // Set the colour scale
@@ -66,13 +66,6 @@ function draw(){
         // .attr('marker-end','url(#arrowhead)')
         // .style("stroke-width", 2);
 
-    // Append label to the links
-    // link.append("text")
-    //     .attr("dx", 22)
-    //     .attr("dy", ".35em")
-    //     .text(function(d) { return d.name })
-    //     .style("fill", "black");
-
     var linkpaths = svg.selectAll(".linkpath")
         .data(graph.links)
         .enter()
@@ -93,10 +86,10 @@ function draw(){
         .style("pointer-events", "none")
         .attr({'class':'linklabel',
             'id':function(d,i){return 'linklabel'+i},
-            'dx':0,
+            'dx':25,
             'dy':10,
             'font-size':10,
-            'fill':'#aaa'});
+            'fill':'red'});
 
     linklabels.append("textPath")
         .attr('xlink:href',function(d,i) {return '#linkpath'+i})
@@ -129,7 +122,32 @@ function draw(){
         .attr("cy", function(d) { return d.y; })
         .on("dblclick", function(d) {
             // Display the info modal when double clicking on the node
-            $('.modal').css("display", "block")
+            $.ajax({
+                type: 'GET',
+                // d.url thing
+                url: 'http://gameofthrones.wikia.com/api/v1/Articles/AsSimpleJson?id=2123',
+                // dataType: 'json',
+                // crossDomain: true,
+                // headers: {
+                //    'Access-Control-Allow-Origin': '*'
+            //    },
+                // jsonp: 'callback',
+                // jsonpCallback: 'jsonpCallback',
+                // crossDomain : true,
+                success: function(data){
+                    var contentName = data.sections[0].title;
+                    var contentBio = data.sections[0].content[0].text;
+                    console.log(data);
+                    $('#name').append(contentName);
+                    $('#bio').append(contentBio);
+                    // var res = $.parseJSON(data);
+                    // $.each(data, function(index, value){
+                    //     $('.list-of-doughnuts').append("<li> <strong>Style: </strong>" + value["style"] + " & <strong>Flavour: </strong>" + value["flavor"] + "</li>");
+                    // });
+                }
+            });
+
+            $('.modal').css("display", "block");
         })
         .call(drag);
 
