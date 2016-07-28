@@ -18,7 +18,7 @@ app.use(express.static(__dirname + '/')); // Allow access to static page
 
 app.use(cors()); // Using cors to allow cross-origin requests
 // app.use(apiProxy);
-app.use(proxy({target: 'https://gameofthrones.wikia.com/api/v1/Articles/AsSimpleJson?id=', changeOrigin: true}));
+app.use(proxy({target: 'https://gameofthrones.wikia.com/api/v1/Articles/AsSimpleJson?id='}));
 
 // Render index.html at the root
 app.get('/', function(req, res){
