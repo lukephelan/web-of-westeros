@@ -1,5 +1,7 @@
 # Game of Thrones Interactive Family Tree
 
+Hosted version: [https://web-of-westeros.herokuapp.com/](https://web-of-westeros.herokuapp.com/)
+
 This application is an interactive family tree for the TV show Game of Thrones.
 It was inspired by [this website](http://lab.rtve.es/serie-isabel/personajes/),
 a visual display of characters from another TV show.
