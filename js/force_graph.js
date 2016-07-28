@@ -116,10 +116,10 @@ function draw(){
         .style("pointer-events", "none")
         .attr({"class":"linklabel",
             "id":function(d,i){return "linklabel"+i},
-            "dx":25,
+            "dx":35,
             "dy":10,
             "font-size":10,
-            "fill":"red"});
+            "fill":"grey"});
 
     // Attach the link labels to the link paths
     linklabels.append("textPath")
@@ -159,18 +159,15 @@ function draw(){
                     url: "http://gameofthrones.wikia.com/api/v1/Articles/AsSimpleJson?id="+d.profile,
                     success: function(data){
                         var contentName = data.sections[0].title;
-                        // var profilePic = d.img;
                         var contentBio =[];
                         for (i = 0; i < data.sections[0].content.length; i++){
                             contentBio.push(data.sections[0].content[i].text);
                         };
-                        // var contentBio = data.sections[0].content[0].text;
                         $("#name").append(contentName);
                         $("#profile-pic").append("<img src=" + d.img + "/>");
                         for (i = 0; i < contentBio.length; i++){
                             $("#bio").append(contentBio[i] + "<br><br>");
                         };
-                        // $("#bio").append(contentBio);
                     }
                 });
             } else {
@@ -197,8 +194,8 @@ function draw(){
 
     // Append a label to each node from the name field in the database
     node.append("text")
-          .attr("dx", 22)
-          .attr("dy", ".35em")
+          .attr("dx", 25)
+          .attr("dy", -25)
           .text(function(d) { return d.name })
           .style("fill", "black");
 
