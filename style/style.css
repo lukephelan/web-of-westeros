@@ -1,12 +1,11 @@
 body {
-  /*background: url(/style/black-Linen_@2X.png);*/
-  /*color: white;*/
   text-align: center;
+  background: url(/style/snow.png);
 }
 
-/*.force-graph {
-  overflow: scroll;
-}*/
+.headline {
+  width: 65%;
+}
 
 .search-bar {
   color: black;
@@ -14,10 +13,12 @@ body {
 }
 
 ul {
-    list-style-type: upper-roman;
-    background: black;
-    color: white;
-    width: 170px;
+  list-style-type: upper-roman;
+  width: 170px;
+  background-color: #fefefe;
+  margin: auto;
+  border-radius: 3px;
+  border: 1px solid #888;
 }
 
 .ui-helper-hidden-accessible {
@@ -25,7 +26,7 @@ ul {
 }
 
 .link {
-  stroke: black;
+  stroke: grey;
 }
 
 .node text {
@@ -47,28 +48,26 @@ ul {
 }
 
 .modal {
-    display: none;
-    position: fixed;
-    z-index: 1;
-    padding-top: 100px;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color:
-    background-color:
-    color: black;
-    text-align: left;
+  display: none;
+  position: fixed;
+  z-index: 1;
+  padding-top: 100px;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  color: black;
+  text-align: left;
 }
 
 .modal-content {
-    background-color: #fefefe;
-    margin: auto;
-    padding: 20px;
-    border-radius: 3px;
-    border: 1px solid #888;
-    width: 50%;
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border-radius: 3px;
+  border: 1px solid #888;
+  width: 60%;
 }
 
 #profile-pic {
@@ -81,8 +80,8 @@ ul {
 
 #github-link {
   position: absolute;
-  bottom: 50px;
-  right: 50px;
+  bottom: 25px;
+  right: 25px;
 }
 
 .fa {

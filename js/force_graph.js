@@ -15,8 +15,8 @@ var svg = d3.select(".force-graph")
 
 // Append a background to the SVG to receive pointer events for zoom and pan
 svg.append("svg:rect")
-    .attr("width", width)
-    .attr("height", height)
+    .attr("width", width + 500)
+    .attr("height", height + 500)
     .attr("fill", "transparent");
 
 // Defs element for the filters
@@ -101,10 +101,10 @@ function draw(){
         .append("path")
         .attr({"d": function(d) {return "M "+d.source.x+" "+d.source.y+" L "+ d.target.x +" "+d.target.y},
             "class":"linkpath",
-            "fill-opacity":0,
-            "stroke-opacity":0,
-            "fill":"blue",
-            "stroke":"red",
+            // "fill-opacity":0,
+            // "stroke-opacity":0,
+            // "fill":"blue",
+            // "stroke":"red",
             "id":function(d,i) {return "linkpath"+i}})
         .style("pointer-events", "none");
 
