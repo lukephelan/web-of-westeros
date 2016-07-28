@@ -156,7 +156,7 @@ function draw(){
             if (d.profile) {
                 $.ajax({
                     type: "GET",
-                    url: "http://gameofthrones.wikia.com/api/v1/Articles/AsSimpleJson?id="+d.profile,
+                    url: "https://gameofthrones.wikia.com/api/v1/Articles/AsSimpleJson?id="+d.profile,
                     success: function(data){
                         var contentName = data.sections[0].title;
                         var contentBio =[];
