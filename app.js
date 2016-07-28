@@ -24,7 +24,7 @@ app.use('/api/v1/Articles/AsSimpleJson?id=', proxy({
     target: 'https://gameofthrones.wikia.com/',
     // changeOrigin: true,             // for vhosted sites, changes host header to match to target's host
     logLevel: 'debug'
-});
+}));
 
 // Render index.html at the root
 app.get('/', function(req, res){
