@@ -1,11 +1,7 @@
-// Set the variables for the SVG
+// Set variables for the SVG
 var width = 1440,
     height = 700,
     graph;
-
-// Set the colour scale
-// Currently not used because we use images
-// var color = d3.scale.category20b();
 
 // Append the SVG to the force-graph div and assign this SVG as an object
 var svg = d3.select(".force-graph")
@@ -13,48 +9,79 @@ var svg = d3.select(".force-graph")
     .attr("width", width)
     .attr("height", height)
     .attr("pointer-events", "all")
-    .append('g')
+    .append("g")
     .call(d3.behavior.zoom().on("zoom", redraw))
-    .append('g');
+    .append("g");
 
 // Append a background to the SVG to receive pointer events for zoom and pan
-svg.append('svg:rect')
-    .attr('width', width)
-    .attr('height', height)
-    .attr('fill', 'transparent');
+svg.append("svg:rect")
+    .attr("width", width)
+    .attr("height", height)
+    .attr("fill", "transparent");
+
+// Defs element for the filters
+var defs = svg.append("defs");
+
+// Create a filter with id #drop-shadow
+// Set height so the shadow is not clipped
+var filter = defs.append("filter")
+    .attr("id", "drop-shadow")
+    .attr("height", "130%");
+
+// SourceAlpha refers to opacity of graphic that this filter will be applied to
+// convolve that with a Gaussian with standard deviation 3 and store result
+// in blur
+filter.append("feGaussianBlur")
+    .attr("in", "SourceAlpha")
+    .attr("stdDeviation", 2)
+    .attr("result", "blur");
+
+// Translate output of Gaussian blur to the right and down
+// Store result in offsetBlur
+filter.append("feOffset")
+    .attr("in", "blur")
+    .attr("dx", 2)
+    .attr("dy", 2)
+    .attr("result", "offsetBlur");
+
+// Overlay original SourceGraphic over translated blurred opacity by using
+// feMerge filter. Order of specifying inputs is important.
+var feMerge = filter.append("feMerge");
+
+feMerge.append("feMergeNode")
+    .attr("in", "offsetBlur")
+feMerge.append("feMergeNode")
+    .attr("in", "SourceGraphic");
 
 // Redraw the graph after zooming or panning
 function redraw(){
-    //   console.log("here", d3.event.translate, d3.event.scale);
     svg.attr("transform",
         "translate(" + d3.event.translate + ")"
         + " scale(" + d3.event.scale + ")");
 };
 
-// Retrieve data from the Neo4j database API, then create the graph
-d3.json('http://localhost:8080/json', function(err, json){
+// Retrieve data from the Neo4j database API, then call the draw function
+d3.json("http://localhost:8080/json", function(err, json){
     if (err) throw err;
     graph = json;
     draw();
 });
 
-// Create the graph
+// Create the graph data structure out of the json data
 function draw(){
-
-    // Create the graph data structure out of the json data
-
     // Set the force layout
     var force = d3.layout.force()
         .nodes(graph.nodes)
         .links(graph.links)
         .size([width, height])
         .linkDistance(50)
-        .charge(-300)
+        .charge(-700)
         .gravity(0.075)
         .start();
 
+    // Prevent pan event when dragging a node
     var drag = force.drag()
-        .on("dragstart", function() { d3.event.sourceEvent.stopPropagation(); });
+        .on("dragstart", function() { d3.event.sourceEvent.stopPropagation(); })
 
     // Create all the links without a location
     var link = svg.selectAll(".link")
@@ -62,54 +89,58 @@ function draw(){
         .enter()
         .append("line")
         .attr("class", "link")
-        .attr("id",function(d,i) {return 'link'+i});
-        // .attr('marker-end','url(#arrowhead)')
+        .attr("id",function(d,i) {return "link"+i});
+        // I"ve taken out the arrowheads because they don"t look very good
+        // .attr("marker-end","url(#arrowhead)")
         // .style("stroke-width", 2);
 
+    // Create a path for the links - we need this for the link labels
     var linkpaths = svg.selectAll(".linkpath")
         .data(graph.links)
         .enter()
         .append("path")
-        .attr({'d': function(d) {return 'M '+d.source.x+' '+d.source.y+' L '+ d.target.x +' '+d.target.y},
-            'class':'linkpath',
-            'fill-opacity':0,
-            'stroke-opacity':0,
-            'fill':'blue',
-            'stroke':'red',
-            'id':function(d,i) {return 'linkpath'+i}})
+        .attr({"d": function(d) {return "M "+d.source.x+" "+d.source.y+" L "+ d.target.x +" "+d.target.y},
+            "class":"linkpath",
+            "fill-opacity":0,
+            "stroke-opacity":0,
+            "fill":"blue",
+            "stroke":"red",
+            "id":function(d,i) {return "linkpath"+i}})
         .style("pointer-events", "none");
 
+    // Create the link labels
     var linklabels = svg.selectAll(".linklabel")
         .data(graph.links)
         .enter()
         .append("text")
         .style("pointer-events", "none")
-        .attr({'class':'linklabel',
-            'id':function(d,i){return 'linklabel'+i},
-            'dx':25,
-            'dy':10,
-            'font-size':10,
-            'fill':'red'});
+        .attr({"class":"linklabel",
+            "id":function(d,i){return "linklabel"+i},
+            "dx":25,
+            "dy":10,
+            "font-size":10,
+            "fill":"red"});
 
+    // Attach the link labels to the link paths
     linklabels.append("textPath")
-        .attr('xlink:href',function(d,i) {return '#linkpath'+i})
+        .attr("xlink:href",function(d,i) {return "#linkpath"+i})
         .style("pointer-events", "none")
         .text(function(d,i){return d.name});
 
-
-    svg.append('defs').append('marker')
-        .attr({'id':'arrowhead',
-            'viewBox':'-0 -5 10 10',
-            'refX':25,
-            'refY':0,
-            'orient':'auto',
-            'markerWidth':10,
-            'markerHeight':10,
-            'xoverflow':'visible'})
-        .append('svg:path')
-            .attr('d', 'M 0,-5 L 10 ,0 L 0,5')
-            .attr('fill', '#ccc')
-            .attr('stroke','#ccc');
+    // I"ve taken out the arrowheads because they don"t look very good
+    // svg.append("defs").append("marker")
+    //     .attr({"id":"arrowhead",
+    //         "viewBox":"-0 -5 10 10",
+    //         "refX":25,
+    //         "refY":0,
+    //         "orient":"auto",
+    //         "markerWidth":10,
+    //         "markerHeight":10,
+    //         "xoverflow":"visible"})
+    //     .append("svg:path")
+    //         .attr("d", "M 0,-5 L 10 ,0 L 0,5")
+    //         .attr("fill", "#ccc")
+    //         .attr("stroke","#ccc");
 
 
     // Create all the nodes
@@ -122,34 +153,35 @@ function draw(){
         .attr("cy", function(d) { return d.y; })
         .on("dblclick", function(d) {
             // Display the info modal when double clicking on the node
-            $.ajax({
-                type: 'GET',
-                // d.url thing
-                url: 'http://gameofthrones.wikia.com/api/v1/Articles/AsSimpleJson?id=2123',
-                // dataType: 'json',
-                // crossDomain: true,
-                // headers: {
-                //    'Access-Control-Allow-Origin': '*'
-            //    },
-                // jsonp: 'callback',
-                // jsonpCallback: 'jsonpCallback',
-                // crossDomain : true,
-                success: function(data){
-                    var contentName = data.sections[0].title;
-                    var contentBio = data.sections[0].content[0].text;
-                    console.log(data);
-                    $('#name').append(contentName);
-                    $('#bio').append(contentBio);
-                    // var res = $.parseJSON(data);
-                    // $.each(data, function(index, value){
-                    //     $('.list-of-doughnuts').append("<li> <strong>Style: </strong>" + value["style"] + " & <strong>Flavour: </strong>" + value["flavor"] + "</li>");
-                    // });
-                }
-            });
-
-            $('.modal').css("display", "block");
+            if (d.profile) {
+                $.ajax({
+                    type: "GET",
+                    url: "http://gameofthrones.wikia.com/api/v1/Articles/AsSimpleJson?id="+d.profile,
+                    success: function(data){
+                        var contentName = data.sections[0].title;
+                        // var profilePic = d.img;
+                        var contentBio =[];
+                        for (i = 0; i < data.sections[0].content.length; i++){
+                            contentBio.push(data.sections[0].content[i].text);
+                        };
+                        // var contentBio = data.sections[0].content[0].text;
+                        $("#name").append(contentName);
+                        $("#profile-pic").append("<img src=" + d.img + "/>");
+                        for (i = 0; i < contentBio.length; i++){
+                            $("#bio").append(contentBio[i] + "<br><br>");
+                        };
+                        // $("#bio").append(contentBio);
+                    }
+                });
+            } else {
+                $("#bio").append("Sorry, this character is so obscure there\'s not enough information to give you!");
+            };
+            $(".modal").css("display", "block");
         })
         .call(drag);
+
+    // Prevent window from zooming in when double-clicking a node
+    node.on("dblclick.zoom", function(d) { d3.event.stopPropagation()});;
 
     // Append an image to the node from the URL in the database
     node.append("image")
@@ -160,19 +192,8 @@ function draw(){
         .attr("x", function(d) { return -25;})
         .attr("y", function(d) { return -25;})
         .attr("height", 50)
-        .attr("width", 50);
-        // .call(force.drag);
-
-    // // Append a circle to the node - NOT USED NOW BECAUSE WE HAVE AN IMAGE
-    // node.append("circle")
-    //     .attr("r", 8)
-    //     // .attr("fill", "url(#photo)");
-    //     // .attr("fill", function(d) {
-    //     //    return color(d.img);
-    // //    });
-    //     .style("fill", function (d) {
-    //         return color(d.group);
-    //     });
+        .attr("width", 50)
+        .style("filter", "url(#drop-shadow)");
 
     // Append a label to each node from the name field in the database
     node.append("text")
@@ -180,8 +201,6 @@ function draw(){
           .attr("dy", ".35em")
           .text(function(d) { return d.name })
           .style("fill", "black");
-
-
 
     // Give the SVG coordinates
     force.on("tick", function(){
@@ -191,31 +210,23 @@ function draw(){
             .attr("x2", function (d){ return d.target.x; })
             .attr("y2", function (d){ return d.target.y; });
 
-        linkpaths.attr('d', function(d) {
-            var path = 'M '+d.source.x+' '+d.source.y+' L '+ d.target.x +
-                ' '+d.target.y;
+        linkpaths.attr("d", function(d){
+            var path = "M " + d.source.x + " " + d.source.y + " L " + d.target.x +
+                " " + d.target.y;
             return path
         });
 
-        linklabels.attr('transform',function(d, i){
+        linklabels.attr("transform", function(d, i){
             if (d.target.x < d.source.x){
                 bbox = this.getBBox();
                 rx = bbox.x + bbox.width / 2;
                 ry = bbox.y + bbox.height / 2;
-                return 'rotate(180 ' + rx + ' ' + ry + ')';
+                return "rotate(180 " + rx + " " + ry + ")";
                 }
             else {
-                return 'rotate(0)';
+                return "rotate(0)";
                 }
             });
-
-        // d3.selectAll("circle")
-        //     .attr("cx", function (d){
-        //     return d.x;
-        // })
-        //     .attr("cy", function (d){
-        //     return d.y;
-        // });
 
         d3.selectAll("image")
             .attr("x", function (d){ return d.x - 25; })
@@ -230,15 +241,15 @@ function draw(){
 
     var padding = 50, // Separation between nodes
         radius = 50;
-    function collide(alpha) {
+    function collide(alpha){
         var quadtree = d3.geom.quadtree(graph.nodes);
-        return function(d) {
-            var rb = 2*radius + padding,
+        return function(d){
+            var rb = 2 * radius + padding,
                 nx1 = d.x - rb,
                 nx2 = d.x + rb,
                 ny1 = d.y - rb,
                 ny2 = d.y + rb;
-                quadtree.visit(function(quad, x1, y1, x2, y2) {
+                quadtree.visit(function(quad, x1, y1, x2, y2){
                     if (quad.point && (quad.point !== d)) {
                         var x = d.x - quad.point.x,
                         y = d.y - quad.point.y,
