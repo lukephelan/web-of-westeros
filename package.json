@@ -12,7 +12,6 @@
   "dependencies": {
     "cors": "^2.7.1",
     "express": "^4.14.0",
-    "http-proxy-middleware": "^0.17.0",
     "node-neo4j": "^2.0.3"
   }
 }
