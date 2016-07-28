@@ -223,6 +223,18 @@ turns out that D3.js changing the handling of drag gestures in version 3. See
 [this Stack Overflow question](http://stackoverflow.com/questions/17953106/why-does-d3-js-v3-break-my-force-graph-when-implementing-zooming-when-v2-doesnt)
 for an explanation.
 
+### Cross-Origin Issues
+
+#### HTTPS and HTTP
+
+Just change it to HTTPS in your code.
+
+#### Cross-Origin Requests
+
+You won't have access to the third-party API. So what do you do?
+
+I'm still trying to figure that out.
+
 ## To-Do
 
 - Show character/house/region information upon double-click that is connected

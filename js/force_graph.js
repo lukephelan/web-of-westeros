@@ -158,7 +158,7 @@ function draw(){
                     type: "GET",
                     url: "https://gameofthrones.wikia.com/api/v1/Articles/AsSimpleJson?id="+d.profile,
                     dataType: "json",
-                    cors: false;
+                    cors: false,
                     headers: {
                     'Access-Control-Allow-Origin': '*'
                     },
