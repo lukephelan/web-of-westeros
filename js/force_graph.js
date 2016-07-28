@@ -157,6 +157,10 @@ function draw(){
                 $.ajax({
                     type: "GET",
                     url: "https://gameofthrones.wikia.com/api/v1/Articles/AsSimpleJson?id="+d.profile,
+                    error: function(err){
+                        console.log("You need to install the CORS Chrome add-on.");
+                        $("#bio").append("Unfortunately, you need to install the CORS Chrome add-on: " + "<a href='https://chrome.google.com/webstore/detail/allow-control-allow-origi/nlfbmbojpeacfghkpbjhddihlkkiljbi?hl=en' target='_blank'>CORS Chrome add-on:</a>");
+                    },
                     success: function(data){
                         var contentName = data.sections[0].title;
                         var contentBio =[];

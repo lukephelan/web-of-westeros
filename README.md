@@ -7,20 +7,26 @@ a visual display of characters from another TV show.
 My application turned out a bit different as I started exploring graph
 databases and data visualisation.
 
+Unfortunately, you must use the [Chrome 'Allow-Control-Allow-Origin'](https://chrome.google.com/webstore/detail/allow-control-allow-origi/nlfbmbojpeacfghkpbjhddihlkkiljbi?hl=en)
+add-on for the third-party API calls to work (double click on a node and you
+will see what I mean). If anyone knows a work-around, please contact me.
+
 ## How to Use
 
-1. Clone or download this repository
-2. Run `npm install` in your terminal at the root directory of the project
+1. Clone or download this repository, as well as [this repository](https://github.com/lukephelan/api-wow).
+2. Run `npm install` in your terminal at the root directory of each project
 3. Download Neo4j and select a database location somewhere locally
 4. Set a username and password for your database and append your own username
  and password in /api/app.js/ where it connects to the database
  `db = new neo4j('http://<username>:<password>@localhost:7474');`
 5. Follow Neo4j's link to the browser interface
 6. Copy and paste the code from [got-tree]('/api/seed') into the command line to
- seed the database.
+ seed the database
 7. Run two local servers from your terminal for both app.js files
 8. Head to the localhost root directory for the front-end server
-9. Application should be up and running!
+9. Check the back-end API at the hosted port with a /json extension to check
+that it is sending JSON data
+10. Application should be up and running
 
 ## Choosing Technology
 
@@ -104,12 +110,8 @@ An example of a query on information about Jon Snow:
 
 http://gameofthrones.wikia.com/api/v1/Articles/AsSimpleJson?id=2123
 
-This lays out all the articles from the Jon Snow biography page, but does not
-capture information such as that I want to store in the database.
-
-At this stage, I only have the URL to images. Once the modals are up and
-running, I will figure out a way to use this API to present data on the front
-end.
+Unfortunately, this API does not seem to have CORS enabled, which is a strange
+thing for an API. Unless I am doing something wrong...
 
 ## Neo4j to D3.js
 
@@ -156,8 +158,8 @@ stepped away for a while it made more sense to give it a shot. Once you figure
 out how to seed and run queries, it's really not that hard after all.
 
 If you want to use a database that relies on a lot of complicated relationships
-(refer to Neo4j's [examples](https://neo4j.com/use-cases/)), I would definitely
-recommend considering Neo4j.
+(refer to Neo4j's [examples](https://neo4j.com/use-cases/)), I would
+recommend Neo4j.
 
 ### Querying the Database
 
@@ -210,7 +212,7 @@ own unique ID's upon creating data. Something to keep in mind.
 ### Click and Drag
 
 Given the size of the visualisation, in order to prevent the display from
-clustering, I wanted to implement the ability to zoom and pan. I followed the
+clustering, I wanted to implement the ability to zoom and pan. I followed
 examples online such as [this one](http://jsfiddle.net/nrabinowitz/QMKm3/). In
 this example you will notice that when you click and hold on the background,
 you can pan the graph. However, when you click on a node and drag, only the node
@@ -219,7 +221,7 @@ the entire graph pans (the node also moves slightly).
 
 Finally, I discovered that I wasn't doing anything specific wrong, rather, I
 was using a different version of D3.js than in the examples I was finding. It
-turns out that D3.js changing the handling of drag gestures in version 3. See
+turns out that D3.js changed the handling of drag gestures in version 3. See
 [this Stack Overflow question](http://stackoverflow.com/questions/17953106/why-does-d3-js-v3-break-my-force-graph-when-implementing-zooming-when-v2-doesnt)
 for an explanation.
 
@@ -227,21 +229,21 @@ for an explanation.
 
 #### HTTPS and HTTP
 
-Just change it to HTTPS in your code.
+Heroku is served on a secure protocol, i.e. HTTPS. The application does not
+like mixed content and will complain if you attempt to request content from
+a regular HTTP page. This can easily be overcome simply by adding the 'S' in
+your code.
 
 #### Cross-Origin Requests
 
-You won't have access to the third-party API. So what do you do?
+[Cross-origin HTTP requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS)
+are better explained elsewhere. Essentially, unless a third-party API has been
+set-up to allow for cross-origin requests, there is not much you can do about
+it from the client side.
 
-I'm still trying to figure that out.
-
-## To-Do
-
-- Show character/house/region information upon double-click that is connected
-to the Game of Thrones Wiki API
-- Currently when you try to click and drag a node, the whole graph drags - it
-should only happen when you click the background, when you click a node it
-should drag that node around
-- In general the styling needs to be improved
-- Images should be circles
-- Host it online
+I have not found a workaround for this issue other than to use the
+[Chrome 'Allow-Control-Allow-Origin](https://chrome.google.com/webstore/detail/allow-control-allow-origi/nlfbmbojpeacfghkpbjhddihlkkiljbi?hl=en)
+add-on. This is OK for me, but not so great for people who want to use the
+application. Another workaround may be to upload the data into the database so
+that I am not reliant on any third-party API. The disadvantages are that it will
+take me a lot of time to do and the data won't remain up-to-date.
