@@ -61,7 +61,7 @@ function redraw(){
 };
 
 // Retrieve data from the Neo4j database API, then call the draw function
-d3.json("http://localhost:8080/json", function(err, json){
+d3.json("https://api-wow.herokuapp.com/json", function(err, json){
     if (err) throw err;
     graph = json;
     draw();
