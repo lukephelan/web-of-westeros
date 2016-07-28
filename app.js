@@ -1,8 +1,6 @@
 var express = require('express'); // Require express
 var cors = require('cors'); // Required for cross-origin requests
 var proxy = require('http-proxy-middleware');
-
-
 var app = express(); // Set app as express
 
 
@@ -19,7 +17,7 @@ app.use(cors()); // Using cors to allow cross-origin requests
 
 app.use(proxy({
         target: 'https://gameofthrones.wikia.com/api/v1/Articles/AsSimpleJson?id=',
-        changeOrigin: false
+        changeOrigin: true
     })
 );
 
