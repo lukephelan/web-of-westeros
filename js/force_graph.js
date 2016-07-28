@@ -156,12 +156,9 @@ function draw(){
             if (d.profile) {
                 $.ajax({
                     type: "GET",
+                    "async": true, //cannot be false for JSONP
                     url: "https://gameofthrones.wikia.com/api/v1/Articles/AsSimpleJson?id="+d.profile,
-                    dataType: "json",
-                    cors: false,
-                    headers: {
-                    'Access-Control-Allow-Origin': '*'
-                    },
+                    dataType: "jsonp",
                     success: function(data){
                         var contentName = data.sections[0].title;
                         var contentBio =[];
