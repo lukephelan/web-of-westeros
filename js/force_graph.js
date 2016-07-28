@@ -155,7 +155,7 @@ function draw(){
             // Display the info modal when double clicking on the node
             if (d.profile) {
                 $.ajax({
-                    type: "GET",
+                    method: "GET",
                     url: "https://gameofthrones.wikia.com/api/v1/Articles/AsSimpleJson?id="+d.profile,
                     headers: {
                     'Access-Control-Allow-Origin': '*'
