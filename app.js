@@ -2,9 +2,6 @@ var express = require('express'); // Require express
 var cors = require('cors'); // Required for cross-origin requests
 var proxy = require('http-proxy-middleware');
 
-// var apiProxy = proxy({
-
-});
 
 var app = express(); // Set app as express
 
