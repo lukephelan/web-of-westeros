@@ -17,7 +17,9 @@ app.use(cors()); // Using cors to allow cross-origin requests
 
 app.use(proxy({
         target: 'https://gameofthrones.wikia.com/api/v1/Articles/AsSimpleJson?id=',
+        changeOrigin: true,
         onProxyRes: function (proxyRes, req, res) {
+            console.log("hello");
             proxyRes.headers['Access-Control-Allow-Origin'] = '*';
         }
     })
