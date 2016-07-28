@@ -24,7 +24,7 @@ app.use('/api/v1/Articles/AsSimpleJson?id=',
     proxy({target: 'https://gameofthrones.wikia.com/',
             changeOrigin: false,
             logLevel: 'debug'
-        });
+        })
     );
 
 // Render index.html at the root
