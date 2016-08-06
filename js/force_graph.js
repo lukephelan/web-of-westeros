@@ -49,16 +49,15 @@ filter.append("feOffset")
 var feMerge = filter.append("feMerge");
 
 feMerge.append("feMergeNode")
-    .attr("in", "offsetBlur")
+    .attr("in", "offsetBlur");
 feMerge.append("feMergeNode")
     .attr("in", "SourceGraphic");
 
 // Redraw the graph after zooming or panning
 function redraw(){
     svg.attr("transform",
-        "translate(" + d3.event.translate + ")"
-        + " scale(" + d3.event.scale + ")");
-};
+        "translate(" + d3.event.translate + ")" + " scale(" + d3.event.scale + ")");
+}
 
 // Retrieve data from the Neo4j database API, then call the draw function
 d3.json("https://api-wow.herokuapp.com/json", function(err, json){
@@ -81,7 +80,7 @@ function draw(){
 
     // Prevent pan event when dragging a node
     var drag = force.drag()
-        .on("dragstart", function() { d3.event.sourceEvent.stopPropagation(); })
+        .on("dragstart", function() { d3.event.sourceEvent.stopPropagation(); });
 
     // Create all the links without a location
     var link = svg.selectAll(".link")
@@ -89,7 +88,7 @@ function draw(){
         .enter()
         .append("line")
         .attr("class", "link")
-        .attr("id",function(d,i) {return "link"+i});
+        .attr("id",function(d,i) { return "link"+i; });
         // I"ve taken out the arrowheads because they don"t look very good
         // .attr("marker-end","url(#arrowhead)")
         // .style("stroke-width", 2);
@@ -99,13 +98,14 @@ function draw(){
         .data(graph.links)
         .enter()
         .append("path")
-        .attr({"d": function(d) {return "M "+d.source.x+" "+d.source.y+" L "+ d.target.x +" "+d.target.y},
+        .attr({"d": function(d) {return "M "+d.source.x+" "+d.source.y+" L "+ d.target.x +" "+d.target.y;},
             "class":"linkpath",
             // "fill-opacity":0,
             // "stroke-opacity":0,
             // "fill":"blue",
             // "stroke":"red",
-            "id":function(d,i) {return "linkpath"+i}})
+            "id":function(d,i) { return "linkpath"+i; }
+        })
         .style("pointer-events", "none");
 
     // Create the link labels
@@ -115,7 +115,7 @@ function draw(){
         .append("text")
         .style("pointer-events", "none")
         .attr({"class":"linklabel",
-            "id":function(d,i){return "linklabel"+i},
+            "id":function(d,i) { return "linklabel"+i; },
             "dx":35,
             "dy":10,
             "font-size":10,
@@ -123,9 +123,9 @@ function draw(){
 
     // Attach the link labels to the link paths
     linklabels.append("textPath")
-        .attr("xlink:href",function(d,i) {return "#linkpath"+i})
+        .attr("xlink:href",function(d,i) { return "#linkpath"+i; })
         .style("pointer-events", "none")
-        .text(function(d,i){return d.name});
+        .text(function(d,i) { return d.name; });
 
     // I"ve taken out the arrowheads because they don"t look very good
     // svg.append("defs").append("marker")
@@ -156,7 +156,7 @@ function draw(){
             if (d.profile) {
                 $.ajax({
                     type: "GET",
-                    url: "https://gameofthrones.wikia.com/api/v1/Articles/AsSimpleJson?id="+d.profile,
+                    url: "https://cors-anywhere.herokuapp.com/https://gameofthrones.wikia.com/api/v1/Articles/AsSimpleJson?id="+d.profile,
                     error: function(err){
                         console.log("You need to install the CORS Chrome add-on.");
                         $("#bio").append("Unfortunately, you need to install the " + "<a href='https://chrome.google.com/webstore/detail/allow-control-allow-origi/nlfbmbojpeacfghkpbjhddihlkkiljbi?hl=en' target='_blank'>CORS Chrome add-on.</a>");
@@ -166,30 +166,28 @@ function draw(){
                         var contentBio =[];
                         for (i = 0; i < data.sections[0].content.length; i++){
                             contentBio.push(data.sections[0].content[i].text);
-                        };
+                        }
                         $("#name").append(contentName);
                         $("#profile-pic").append("<img src=" + d.img + "/>");
                         for (i = 0; i < contentBio.length; i++){
                             $("#bio").append(contentBio[i] + "<br><br>");
-                        };
+                        }
                     }
                 });
             } else {
                 $("#bio").append("Sorry, this character is so obscure there\'s not enough information to give you!");
-            };
+            }
             $(".modal").css("display", "block");
         })
         .call(drag);
 
     // Prevent window from zooming in when double-clicking a node
-    node.on("dblclick.zoom", function(d) { d3.event.stopPropagation()});;
+    node.on("dblclick.zoom", function(d) { d3.event.stopPropagation(); });
 
     // Append an image to the node from the URL in the database
     node.append("image")
         .attr("class", "image")
-        .attr("xlink:href", function(d) {
-            return d.img
-        })
+        .attr("xlink:href", function(d) { return d.img; })
         .attr("x", function(d) { return -25;})
         .attr("y", function(d) { return -25;})
         .attr("height", 50)
@@ -200,7 +198,7 @@ function draw(){
     node.append("text")
           .attr("dx", 25)
           .attr("dy", -25)
-          .text(function(d) { return d.name })
+          .text(function(d) { return d.name; })
           .style("fill", "black");
 
     // Give the SVG coordinates
@@ -214,7 +212,7 @@ function draw(){
         linkpaths.attr("d", function(d){
             var path = "M " + d.source.x + " " + d.source.y + " L " + d.target.x +
                 " " + d.target.y;
-            return path
+            return path;
         });
 
         linklabels.attr("transform", function(d, i){
@@ -281,7 +279,7 @@ function draw(){
             position: { my : "top", at: "bottom" }
         });
     });
-};
+}
 
 function searchNode(){
     // Find the node
@@ -295,9 +293,9 @@ function searchNode(){
             return d.name != selectedVal;
         });
         selected.style("opacity", "0");
-        var link = svg.selectAll(".link")
+        var link = svg.selectAll(".link");
         link.style("opacity", "0");
-        var linklabel = svg.selectAll(".linklabel")
+        var linklabel = svg.selectAll(".linklabel");
         linklabel.style("opacity", "0");
         d3.selectAll(".node, .link, .linklabel")
             .transition()
