@@ -13,5 +13,6 @@ app.get('/', function(req, res){
 
 // Set the local port to 3000
 app.listen(process.env.PORT || 3000, function(){
+  console.log(app);
   console.log('Winter is coming!');
 });

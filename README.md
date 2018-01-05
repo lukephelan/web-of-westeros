@@ -9,10 +9,6 @@ a visual display of characters from another TV show.
 My application turned out a bit different as I started exploring graph
 databases and data visualisation.
 
-Unfortunately, you must use the [Chrome 'Allow-Control-Allow-Origin'](https://chrome.google.com/webstore/detail/allow-control-allow-origi/nlfbmbojpeacfghkpbjhddihlkkiljbi?hl=en)
-add-on for the third-party API calls to work (double click on a node and you
-will see what I mean). If anyone knows a work-around, please contact me.
-
 ## How to Use
 
 1. Clone or download this repository, as well as [this repository](https://github.com/lukephelan/api-wow).
